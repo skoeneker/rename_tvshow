@@ -31,7 +31,7 @@ def change_series():
     season = 1
     new_series = 't'
     new_series = input('Are you starting at Season 1? (t/f) ')
- # Ask How many Seasons
+# Ask How many Seasons
     num_seasons = 1
     num_seasons = input('How many Seasons are there?')
     
@@ -57,13 +57,13 @@ def change_series():
         i = 1
         os.mkdir(os.path.join('/', path_base, path_base2, path_base3, series))
         while i <= int(num_seasons):
-           if i <= 9:
-               path_season = 'Season 0' + str(i)
-           else:
-               path_season = 'Season ' + str(i)
-           new_directory = os.path.join('/', path_base, path_base2, path_base3, series, path_season)
-           os.mkdir(new_directory)
-           i = i + 1
+            if i <= 9:
+                path_season = 'Season 0' + str(i)
+            else:
+                path_season = 'Season ' + str(i)
+            new_directory = os.path.join('/', path_base, path_base2, path_base3, series, path_season)
+            os.mkdir(new_directory)
+            i = i + 1
     else:
         season = input("What Season are you starting with? ")
         episode = input("What episode are you starting with? ")
@@ -110,19 +110,32 @@ def change_season(series, season):
         tvshowfile.close()
     
 # Return Series, Season, Episode
-    return(series, new_season, episode)
+    return series, new_season, episode
 
 # Function:  Manual Map
 # Function Input: Series, Season, Episode, # episode
 # Write the series, season, episode and # episode
 # What is the correct mapping per episode
-# Create list of file names
-# Return list of file names
-def manual_map(series, season, episode, num_episode):
-    error_reason = 2
-    exit_error(error_reason)
+# Create list of episode numbers as strings - episodes must be 2 digit
+# Return list of episode numbers
 
-    
+
+def manual_map(series, season, num_episode):
+    print('The Series : ' + series)
+    print('The Season is:' + season)
+    print('There are ' + num_episode + ' episodes.')
+    episode_counter = 0
+    episode_list = list()
+    position_list = ['first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth', 'tenth']
+    while episode_counter < str(num_episode):
+        next_episode = input("What is the episode number for the " + position_list(episode_counter) + "ripped file?")
+        if len(next_episode) < 2:
+            episode_list.append('0' + next_episode)
+        else:
+            episode_list.append(next_episode)
+        episode_counter = episode_counter + 1
+    return episode_list
+
 
 # Main
 # Read file with current series, season and episode and remove end of line marker
@@ -157,12 +170,26 @@ num_episodes = input('How many episodes are being moved? ')
 num_episodes_int = int(num_episodes)
 # Check to see how many episodes have been ripped
 cwd = os.getcwd()
-num_ripped = len(fnmatch.filter(os.listdir(cwd),'*.mkv'))
+num_ripped = len(fnmatch.filter(os.listdir(cwd), '*.mkv'))
 
 # if # to rename not equal to # ripped; error message and quit
 if (num_episodes_int != num_ripped):
     error_reason = 1
     exit_error(error_reason)
+
+# create a list of file names
+#    Set the file paths
+#    check to see if ripped files are in order
+path_base_1 = 'files'
+path_base_2 = 'plex'
+path_base_3 = 'tv-shows'
+path_series = series
+if int(season) <= 9:
+    path_season = 'Season 0' + season
+else:
+    path_season = 'Season ' + season
+ripped_files = sorted(fnmatch.filter(os.listdir(cwd), '*.mkv'))
+new_file_name = list()
 
 # Ask if episodes are in order (i.e. air date = disc order)
 correct = 't'
@@ -174,19 +201,17 @@ correct = input('Are the episodes in the correct order? (t/f)')
 #   Create list of file names
 
 if correct != 't':
-    manual_map(series, season, episode, num_episodes)
+    out_of_order_episode_list = list()
+    out_of_order_episode_list = manual_map(series, season, num_episodes)
+    episode_counter = 0
+    for ripped_files in ripped_files:
+        if int(season) <= 9:
+            new_name = series + ' s0' + season + 'e' + out_of_order_episode_list(episode_counter) + '.mkv'
+        else:
+            new_name = series + ' s' + season + 'e' + out_of_order_episode_list(episode_counter) + '.mkv'
+        new_file_name.append(os.path.join('/', path_base_1, path_base_2, path_base_3, path_series, path_season, new_name))
+        episode_counter = episode_counter +1
 else:
-    path_base_1 = 'files'
-    path_base_2 = 'plex'
-    path_base_3 = 'tv-shows'
-    path_series = series
-    if int(season) <= 9:
-        path_season = 'Season 0' + season
-    else:
-        path_season = 'Season ' + season
-    ripped_files = sorted(fnmatch.filter(os.listdir(cwd), '*.mkv'))
-    
-    new_file_name = list()
     for ripped_file in ripped_files:
         episode = int(episode) + 1
         if int(season) <= 9:
@@ -218,4 +243,3 @@ data.close()
 # Write completion message
 print('Renaming program is complete')
 # End
-
