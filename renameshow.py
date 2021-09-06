@@ -127,8 +127,8 @@ def manual_map(series, season, num_episode):
     episode_counter = 0
     episode_list = list()
     position_list = ['first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth', 'tenth']
-    while episode_counter < str(num_episode):
-        next_episode = input("What is the episode number for the " + position_list(episode_counter) + "ripped file?")
+    while episode_counter < int(num_episode):
+        next_episode = input("What is the episode number for the " + position_list[episode_counter] + " ripped file?")
         if len(next_episode) < 2:
             episode_list.append('0' + next_episode)
         else:
@@ -204,11 +204,11 @@ if correct != 't':
     out_of_order_episode_list = list()
     out_of_order_episode_list = manual_map(series, season, num_episodes)
     episode_counter = 0
-    for ripped_files in ripped_files:
+    for ripped_file in ripped_files:
         if int(season) <= 9:
-            new_name = series + ' s0' + season + 'e' + out_of_order_episode_list(episode_counter) + '.mkv'
+            new_name = series + ' s0' + season + 'e' + out_of_order_episode_list[episode_counter] + '.mkv'
         else:
-            new_name = series + ' s' + season + 'e' + out_of_order_episode_list(episode_counter) + '.mkv'
+            new_name = series + ' s' + season + 'e' + out_of_order_episode_list[episode_counter] + '.mkv'
         new_file_name.append(os.path.join('/', path_base_1, path_base_2, path_base_3, path_series, path_season, new_name))
         episode_counter = episode_counter +1
 else:
