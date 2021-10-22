@@ -125,6 +125,8 @@ def manual_map(series, season, num_episode):
     print('The Season is:' + season)
     print('There are ' + num_episode + ' episodes.')
     episode_counter = 0
+    next_episode = " "
+    episode = " "
     episode_list = list()
     position_list = ['first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth', 'tenth']
     while episode_counter < int(num_episode):
@@ -134,7 +136,9 @@ def manual_map(series, season, num_episode):
         else:
             episode_list.append(next_episode)
         episode_counter = episode_counter + 1
-    return episode_list
+        if int(next_episode) > int(episode):
+            episode = next_episode
+    return episode_list, episode
 
 
 # Main
@@ -202,7 +206,7 @@ correct = input('Are the episodes in the correct order? (t/f)')
 
 if correct != 't':
     out_of_order_episode_list = list()
-    out_of_order_episode_list = manual_map(series, season, num_episodes)
+    out_of_order_episode_list, episode = manual_map(series, season, num_episodes)
     episode_counter = 0
     for ripped_file in ripped_files:
         if int(season) <= 9:
